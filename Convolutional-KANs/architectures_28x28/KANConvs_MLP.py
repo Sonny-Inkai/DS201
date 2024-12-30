@@ -65,7 +65,7 @@ class KANC_MLP_Medium(nn.Module):
         self.flat = nn.Flatten() 
         
         self.linear1 = nn.Linear(250, 10)
-        self.name = f"KANC MLP (Medium) (gs = {grid_size})"
+        self.name = f"KANC MLP (gs = {grid_size})"
 
 
     def forward(self, x):

@@ -109,7 +109,7 @@ def test(model, device, test_loader, criterion):
     #     test_loss, correct, len(test_loader.dataset), accuracy, precision, recall, f1))
 
     return test_loss, accuracy, precision, recall, f1
-def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path = "drive/MyDrive/KANs/models",verbose = True,save_last=False,patience = np.inf):
+def train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs, scheduler, path=None, verbose=True, save_last=False, patience=np.inf):
     """
     Train and test the model
 
@@ -122,14 +122,13 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         criterion: the loss function (e.g. CrossEntropy)
         epochs: the number of epochs to train
         scheduler: the learning rate scheduler
+        path: path to save model weights
+        verbose: whether to print progress
+        save_last: whether to save the last model
+        patience: early stopping patience
 
     Returns:
-        all_train_loss: a list of the average training loss for each epoch
-        all_test_loss: a list of the average test loss for each epoch
-        all_test_accuracy: a list of the accuracy for each epoch
-        all_test_precision: a list of the precision for each epoch
-        all_test_recall: a list of the recall for each epoch
-        all_test_f1: a list of the f1 score for each epoch
+        Lists of metrics for each epoch
     """
     # Track metrics
     all_train_loss = []
@@ -140,10 +139,12 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
     all_test_f1 = []
     best_acc = 0
     havent_improved = 0
+
     for epoch in range(1, epochs + 1):
         # Train the model
         train_loss = train(model, device, train_loader, optimizer, epoch, criterion)
         all_train_loss.append(train_loss)
+        
         # Test the model
         test_loss, test_accuracy, test_precision, test_recall, test_f1 = test(model, device, test_loader, criterion)
         all_test_loss.append(test_loss)
@@ -151,26 +152,36 @@ def train_and_test_models(model, device, train_loader, test_loader, optimizer, c
         all_test_precision.append(test_precision)
         all_test_recall.append(test_recall)
         all_test_f1.append(test_f1)
+        
         if verbose:
             print(f'End of Epoch {epoch}: Train Loss: {train_loss:.6f}, Test Loss: {test_loss:.4f}, Accuracy: {test_accuracy:.2%}')
-        if test_accuracy>best_acc:
+        
+        if test_accuracy > best_acc:
             havent_improved = 0
             best_acc = test_accuracy
-            if not path is None:
-                torch.save(model,os.path.join(path,model.name+".pt"))
-        else: havent_improved+=1
+            if path is not None:
+                # Save only model state dict
+                torch.save(model.state_dict(), os.path.join(path, model.name + ".pt"))
+        else:
+            havent_improved += 1
+            
         if not (scheduler is None):
             scheduler.step()
-        if havent_improved>patience:#early stopping
+            
+        if havent_improved > patience:  # early stopping
             break
+
     model.all_test_accuracy = all_test_accuracy
     model.all_test_precision = all_test_precision
     model.all_test_f1 = all_test_f1
     model.all_test_recall = all_test_recall
+    
     if verbose:
         print("Best test accuracy", best_acc)
-    if save_last:
-        torch.save(model,os.path.join(path,model.name+".pt"))
+        
+    if save_last and path is not None:
+        # Save only model state dict for last epoch
+        torch.save(model.state_dict(), os.path.join(path, model.name + ".pt"))
 
     return all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1
 

@@ -57,13 +57,17 @@ def join_path(name,pa):
   return os.path.join(pa,name+".pt")
 
 model_KANC_MLP= KANC_MLP_Medium()
+print(f"============== Training model {model_KANC_MLP.name} ============")
 train_model_generic(model_KANC_MLP, cifar_train, cifar_test, device, epochs=10, path=path)
 
 model_KKAN_Convolutional_Network = KKAN_Convolutional_Network()
+print(f"============== Training model {model_KKAN_Convolutional_Network.name} ============")
 train_model_generic(model_KKAN_Convolutional_Network, cifar_train, cifar_test, device, epochs=10, path=path)
 
 model_Convs_and_KAN= NormalConvsKAN_Medium()
+print(f"============== Training model {model_Convs_and_KAN.name} ============")
 train_model_generic(model_Convs_and_KAN, cifar_train, cifar_test, device, epochs=10, path=path)
 
 model_SimpleCNN = MediumCNN()
+print(f"============== Training model {model_SimpleCNN.name} ============")
 train_model_generic(model_SimpleCNN, cifar_train, cifar_test, device, epochs=10, path=path)
