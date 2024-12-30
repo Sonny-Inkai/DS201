@@ -47,19 +47,23 @@ if not os.path.exists("models"):
 if not os.path.exists("results"):
     os.mkdir("results")
 
+
+
 path = "models/CIFAR10"
+if not os.path.exists(path):
+    os.mkdir(path)
 def join_path(name,pa):
   print(os.path.join(pa,name+".pt"))
   return os.path.join(pa,name+".pt")
 
 model_KANC_MLP= KANC_MLP_Medium()
-train_model_generic(model_KANC_MLP, cifar_train, cifar_test, device, epochs=20, path=path)
+train_model_generic(model_KANC_MLP, cifar_train, cifar_test, device, epochs=10, path=path)
 
 model_KKAN_Convolutional_Network = KKAN_Convolutional_Network()
-train_model_generic(model_KKAN_Convolutional_Network, cifar_train, cifar_test, device, epochs=20, path=path)
+train_model_generic(model_KKAN_Convolutional_Network, cifar_train, cifar_test, device, epochs=10, path=path)
 
 model_Convs_and_KAN= NormalConvsKAN_Medium()
-train_model_generic(model_Convs_and_KAN, cifar_train, cifar_test, device, epochs=20, path=path)
+train_model_generic(model_Convs_and_KAN, cifar_train, cifar_test, device, epochs=10, path=path)
 
 model_SimpleCNN = MediumCNN()
-train_model_generic(model_SimpleCNN, cifar_train, cifar_test, device, epochs=20, path=path)
+train_model_generic(model_SimpleCNN, cifar_train, cifar_test, device, epochs=10, path=path)
