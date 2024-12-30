@@ -24,15 +24,15 @@ def train_model_generic(model, train_ds, test_ds,device,epochs= 15,path =  "driv
     mnist_train, mnist_val = torch.utils.data.random_split(train_ds, [51000,9000],
     generator=gen)
     # DataLoader
-    train_loader = DataLoader(mnist_train, batch_size=256, shuffle=True)
-    val_loader = DataLoader(mnist_val, batch_size=256, shuffle=False)
-    test_loader = DataLoader(test_ds, batch_size=256, shuffle=False)
+    train_loader = DataLoader(mnist_train, batch_size=1024, shuffle=True)
+    val_loader = DataLoader(mnist_val, batch_size=1024, shuffle=False)
+    test_loader = DataLoader(test_ds, batch_size=1024, shuffle=False)
 
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, val_loader, optimizer, criterion, epochs=epochs, scheduler=scheduler,path= None)
 
     best_epochs = np.argmax(all_test_accuracy)+1
     
-    train_loader = DataLoader(train_ds, batch_size=256, shuffle=True)
+    train_loader = DataLoader(train_ds, batch_size=1024, shuffle=True)
 
     all_train_loss, all_test_loss, all_test_accuracy, all_test_precision, all_test_recall, all_test_f1 = train_and_test_models(model, device, train_loader, test_loader, optimizer, criterion, epochs=best_epochs, scheduler=scheduler,path= path,save_last=True)
     total_time = time.perf_counter() - start
