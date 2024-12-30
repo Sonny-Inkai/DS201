@@ -47,11 +47,9 @@ if not os.path.exists("models"):
 if not os.path.exists("results"):
     os.mkdir("results")
 
-
-
-path = "models/CIFAR10"
 if not os.path.exists(path):
     os.mkdir(path)
+    
 def join_path(name,pa):
   print(os.path.join(pa,name+".pt"))
   return os.path.join(pa,name+".pt")
