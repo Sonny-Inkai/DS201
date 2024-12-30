@@ -61,6 +61,7 @@ class KANC_MLP_Medium(nn.Module):
             kernel_size=(2, 2)
         )
         
+        self.dropout = nn.Dropout(p=0.1)
         self.flat = nn.Flatten() 
         
         self.linear1 = nn.Linear(250, 10)
@@ -74,6 +75,7 @@ class KANC_MLP_Medium(nn.Module):
 
         x = self.conv2(x)
         x = self.pool1(x)
+        x = self.dropout(x)
         x = self.flat(x)
         x = self.linear1(x)
         x = F.log_softmax(x, dim=1)

@@ -37,8 +37,9 @@ class MediumCNN(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
         self.flatten = nn.Flatten()
+        self.dropout = nn.Dropout(p=0.1)  
         self.fc = nn.Linear(250, 10)
-        self.name = "CNN (Medium)"
+        self.name = "CNN"
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -46,6 +47,7 @@ class MediumCNN(nn.Module):
         x = F.relu(self.conv2(x))
         x = self.maxpool(x)
         x = self.flatten(x)
+        x = self.dropout(x)  # Apply dropout before the fully connected layer
         x = self.fc(x)
         x = F.log_softmax(x, dim=1)
         return x

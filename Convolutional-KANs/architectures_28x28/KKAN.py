@@ -81,6 +81,8 @@ class KKAN_Convolutional_Network(nn.Module):
             kernel_size=(2, 2)
         )
         
+        self.dropout = nn.Dropout(p=0.1)
+
         self.flat = nn.Flatten() 
 
         self.kan1 = KANLinear(
@@ -95,7 +97,7 @@ class KKAN_Convolutional_Network(nn.Module):
             grid_eps=0.02,
             grid_range=[0,1],
         )
-        self.name = f"KKAN (Medium) (gs = {grid_size})"
+        self.name = f"KKAN (gs = {grid_size})"
 
 
     def forward(self, x):
@@ -105,9 +107,9 @@ class KKAN_Convolutional_Network(nn.Module):
 
         x = self.conv2(x)
         x = self.pool1(x)
+        x = self.dropout(x)
         x = self.flat(x)
         x = self.kan1(x) 
         x = F.log_softmax(x, dim=1)
 
         return x
-    

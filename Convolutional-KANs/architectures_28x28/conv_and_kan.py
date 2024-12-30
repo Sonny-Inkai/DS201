@@ -51,11 +51,14 @@ class NormalConvsKAN_Medium(nn.Module):
 
         self.conv1 = nn.Conv2d(1, 5, kernel_size=3, padding=(0,0))
         self.conv2 = nn.Conv2d(5, 10, kernel_size=3,  padding=(0,0))
-        self.name = f"Conv & KAN (Medium) (gs = {grid_size})"
+        self.name = f"Conv & KAN (gs = {grid_size})"
 
         # Max pooling layer
         self.maxpool = nn.MaxPool2d(kernel_size=2)
         
+        # Dropout layer
+        self.dropout = nn.Dropout(p=0.1)
+
         # Flatten layer
         self.flatten = nn.Flatten()
 
@@ -78,6 +81,7 @@ class NormalConvsKAN_Medium(nn.Module):
         x = self.maxpool(x)
         x = F.relu(self.conv2(x))
         x = self.maxpool(x)
+        x = self.dropout(x)
         x = self.flatten(x)
         x = self.kan1(x)
         x = F.log_softmax(x, dim=1)
