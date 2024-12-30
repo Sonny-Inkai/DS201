@@ -6,7 +6,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 import torchvision.transforms as transforms
-from torchvision.datasets import MNIST
+from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
 from architectures_28x28.KKAN import *
 from architectures_28x28.conv_and_kan import *
@@ -39,16 +39,18 @@ def calculate_time(model,train_obj,test_obj,batch_size):
     print(model.name,"took:",total_time)
     return total_time
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#Transformations
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
+# Transformations for CIFAR10
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
 
-#Load MNIST and filter by classes
-mnist_train = MNIST(root='./data', train=True, download=True, transform=transform)
+# Load CIFAR10 dataset
+cifar_train = CIFAR10(root='./data', train=True, download=True, transform=transform)
+cifar_test = CIFAR10(root='./data', train=False, download=True, transform=transform)
 
-mnist_test = MNIST(root='./data', train=False, download=True, transform=transform)
 
-
-dataset_name = "MNIST"
+dataset_name = "CIFAR10"
 path = f"models/{dataset_name}"
 
 if not os.path.exists("results"):
@@ -67,7 +69,7 @@ models= [KANC_MLP_Medium(), KKAN_Convolutional_Network(), NormalConvsKAN_Medium(
 import json
 dictionary={}
 for m in models:
-    t = calculate_time(m,mnist_train,mnist_test,batch_size)
+    t = calculate_time(m,cifar_train,cifar_test,batch_size)
     dictionary[m.name]=t
 with open(f"results/{dataset_name}/epoch_times.json", "w") as outfile: 
     json.dump(dictionary, outfile)
